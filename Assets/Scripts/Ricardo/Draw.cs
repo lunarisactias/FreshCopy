@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Draw : MonoBehaviour
 {
@@ -6,6 +7,8 @@ public class Draw : MonoBehaviour
     public GameObject brush;
 
     LineRenderer currentLineRenderer;
+
+    public Slider scaleSlider;
 
     Vector2 lastPos;
 
@@ -40,6 +43,8 @@ public class Draw : MonoBehaviour
         GameObject brushInstance = Instantiate(brush);
         currentLineRenderer = brushInstance.GetComponent<LineRenderer>();
 
+        ChangeSize();
+
         Vector2 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
 
         currentLineRenderer.SetPosition(0, mousePos);
@@ -51,5 +56,12 @@ public class Draw : MonoBehaviour
         currentLineRenderer.positionCount++;
         int positionIndex = currentLineRenderer.positionCount - 1;
         currentLineRenderer.SetPosition(positionIndex, pointPos);
+    }
+
+    void ChangeSize()
+    {
+        float value = scaleSlider.value;
+        currentLineRenderer.startWidth = value;
+        currentLineRenderer.endWidth = value;
     }
 }

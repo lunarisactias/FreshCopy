@@ -6,7 +6,7 @@ public class Draw : MonoBehaviour
     public Camera cam;
     public GameObject brush;
 
-    LineRenderer currentLineRenderer;
+    public LineRenderer currentLineRenderer;
 
     public Slider scaleSlider;
 

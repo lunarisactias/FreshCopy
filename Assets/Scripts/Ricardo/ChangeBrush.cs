@@ -1,12 +1,11 @@
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class ChangeBrush : MonoBehaviour
 {
-    public Slider brushSize;
-    
-    void ChangeSize()
-    {
+    public Draw draw;
 
+    public void ChangeColor(GameObject newBrush)
+    {
+        draw.brush = newBrush;
     }
 }

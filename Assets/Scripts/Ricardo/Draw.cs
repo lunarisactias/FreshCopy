@@ -10,8 +10,15 @@ public class Draw : MonoBehaviour
 
     public Slider scaleSlider;
 
+    private int orderInLayer = 0;
+    private Transform parentTransform;
+
     Vector2 lastPos;
 
+    private void Start()
+    {
+        parentTransform = transform;
+    }
     private void Update()
     {
         DrawMethod();
@@ -39,9 +46,11 @@ public class Draw : MonoBehaviour
     }
 
     void CreateBrush()
-    {
-        GameObject brushInstance = Instantiate(brush);
+    {        
+        orderInLayer++;
+        GameObject brushInstance = Instantiate(brush, parentTransform);
         currentLineRenderer = brushInstance.GetComponent<LineRenderer>();
+        currentLineRenderer.sortingOrder = orderInLayer;
 
         ChangeSize();
 

@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -6,9 +7,17 @@ public class Player : MonoBehaviour
     private int score = 0;
     public Texture2D playerDrawing;
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            GetComponentInChildren<SaveImage2>().TakeScreenshot();
+        }
+    }
+
     public void SetDrawing(Texture2D drawing)
     {
-        playerDrawing = drawing;
+        playerDrawing = Path.Combine(Application.dataPath, $"drawing_screenshot_{id}.png") != null ? drawing : null;
     }
 
     public int GetID() 

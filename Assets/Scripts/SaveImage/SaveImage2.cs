@@ -1,11 +1,14 @@
 using UnityEngine;
 using System.IO;
 using System.Collections;
+using UnityEditor;
 
 public class SaveImage2 : MonoBehaviour
 {
     public Camera captureCamera; 
     public RenderTexture renderTexture;
+
+    private int playerID;
 
 
     private void Update()
@@ -33,8 +36,15 @@ public class SaveImage2 : MonoBehaviour
         RenderTexture.active = null;
 
         byte[] bytes = screenShot.EncodeToPNG();
-        string filename = Path.Combine(Application.dataPath, "canvas_screenshot.png");
+        playerID = GetComponentInParent<Player>().GetID();
+        string filename = Path.Combine(Application.dataPath, $"Resources/drawing_screenshot_{playerID}.png");
         File.WriteAllBytes(filename, bytes);
+
+        Texture2D playerDrawing = Resources.Load<Texture2D>($"drawing_screenshot_{playerID}");
+
+        GetComponentInParent<Player>().SetDrawing(playerDrawing);
+
+        AssetDatabase.Refresh();
 
         Debug.Log("Screenshot saved to: " + filename);
 

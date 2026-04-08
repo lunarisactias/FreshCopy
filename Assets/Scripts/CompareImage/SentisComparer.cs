@@ -13,7 +13,7 @@ public class InferenceComparer : MonoBehaviour
     public Texture2D originalDrawing;
     public List<Texture2D> playersDrawing;
 
-    private List<Player> players;
+    public List<Player> players;
     private Model runtimeModel;
     private Worker worker;
 
@@ -24,19 +24,17 @@ public class InferenceComparer : MonoBehaviour
         worker = new Worker(runtimeModel, BackendType.GPUCompute);
 
         players = FindObjectsByType<Player>(FindObjectsSortMode.None).OrderBy(player => player.GetID()).ToList();
-
-        Compare();
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Compare();
+            StartCoroutine(Compare());
         }
     }
 
-    private void Compare()
+    private System.Collections.IEnumerator Compare()
     {
         foreach (var player in players)
         {
@@ -52,6 +50,8 @@ public class InferenceComparer : MonoBehaviour
             player.AddScore(similarity);
             //Debug.Log($"Player {player.id}: {similarity * 100:F0} Pontos!");
         }
+
+        yield return new WaitForEndOfFrame();
 
         playersDrawing.Clear();
 

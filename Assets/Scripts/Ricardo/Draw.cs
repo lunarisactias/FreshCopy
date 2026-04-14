@@ -25,14 +25,49 @@ public class Draw : MonoBehaviour
     }
     void DrawMethod()
     {
-        if(Input.GetMouseButtonDown(0))
+        MouseDrawing();
+        MobileDrawing();
+    }
+
+    void MobileDrawing()
+    {
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+
+            if(touch.phase == TouchPhase.Began)
+            {
+                CreateBrush();
+            }
+
+            if (touch.phase == TouchPhase.Moved)
+            {
+                Vector2 touchPos = cam.ScreenToWorldPoint(Input.GetTouch(0).position);
+                if (touchPos != lastPos)
+                {
+                    AddAPoint(touchPos);
+                    lastPos = touchPos;
+                }
+                AddAPoint(touchPos);
+            }
+
+        }
+
+        else
+        {
+            currentLineRenderer = null;
+        }
+    }
+    void MouseDrawing()
+    {
+        if (Input.GetMouseButtonDown(0))
         {
             CreateBrush();
         }
-        if(Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0))
         {
             Vector2 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
-            if(mousePos != lastPos)
+            if (mousePos != lastPos)
             {
                 AddAPoint(mousePos);
                 lastPos = mousePos;
@@ -44,7 +79,6 @@ public class Draw : MonoBehaviour
             currentLineRenderer = null;
         }
     }
-
     void CreateBrush()
     {        
         orderInLayer++;

@@ -5,7 +5,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using TMPro;
 
-public class InferenceComparer : MonoBehaviour
+public class SentisComparer : MonoBehaviour
 {
     [Header("Configuração")]
     public ModelAsset mobileNetModel;

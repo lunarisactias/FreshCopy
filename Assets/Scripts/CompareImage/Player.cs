@@ -19,7 +19,12 @@ public class Player : MonoBehaviour
 
     public void SetDrawing(Texture2D drawing)
     {
-        playerDrawing = Path.Combine(Application.dataPath, $"drawing_screenshot_{id}.png") != null ? drawing : null;
+        if (playerDrawing != null)
+        {
+            Destroy(playerDrawing);
+        }
+
+        playerDrawing = drawing;
     }
 
     public int GetID() 

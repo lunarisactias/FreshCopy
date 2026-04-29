@@ -1,9 +1,8 @@
 using UnityEngine;
 using Unity.InferenceEngine;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using TMPro;
+using System.Collections;
 
 public class SentisComparer : MonoBehaviour
 {
@@ -12,9 +11,9 @@ public class SentisComparer : MonoBehaviour
 
     [Header("Imagens para Teste")]
     public Texture2D originalDrawing;
-    public List<Texture2D> playersDrawing;
+    public Texture2D playerDrawing;
 
-    public List<Player> players;
+    public Player player;
     private Model runtimeModel;
     private Worker worker;
 
@@ -23,8 +22,6 @@ public class SentisComparer : MonoBehaviour
         runtimeModel = ModelLoader.Load(mobileNetModel);
 
         worker = new Worker(runtimeModel, BackendType.GPUCompute);
-
-        players = FindObjectsByType<Player>(FindObjectsSortMode.None).OrderBy(player => player.GetID()).ToList();
     }
 
     private void Update()
@@ -35,32 +32,27 @@ public class SentisComparer : MonoBehaviour
         }
     }
 
-    private System.Collections.IEnumerator Compare()
+    public void CompareImages()
     {
-        foreach (var player in players)
-        {
-            playersDrawing.Add(player.GetDrawing());
-        }
+        player.GetComponentInChildren<SaveImage2>().TakeScreenshot();
 
-        foreach (var playerDrawing in playersDrawing)
-        {
-            float similarity = CompareDrawings(originalDrawing, playerDrawing);
+        StartCoroutine(Compare());
+    }
 
-            var player = players[playersDrawing.IndexOf(playerDrawing)];
+    private IEnumerator Compare()
+    {
+        yield return new WaitForSeconds(0.5f);
 
-            player.AddScore(similarity);
-            //Debug.Log($"Player {player.id}: {similarity * 100:F0} Pontos!");
-        }
+        playerDrawing = player.GetDrawing();
+       
+        float similarity = CompareDrawings(originalDrawing, playerDrawing);
 
+        player.AddScore(similarity);
+        Debug.Log($"Player {player.id}: {similarity * 100:F0} Pontos!");
+     
         yield return new WaitForEndOfFrame();
 
-        playersDrawing.Clear();
-
-        //string playersInfo = string.Join(", ", players.Select(p => $"Player {p.GetID()}"));
-        //string drawingsInfo = string.Join(", ", playersDrawing.Select(d => d.name));
-
-        //Debug.Log(playersInfo.ToString());
-        //Debug.Log(drawingsInfo.ToString());
+        playerDrawing = null;
     }
 
     float CompareDrawings(Texture2D texA, Texture2D texB)

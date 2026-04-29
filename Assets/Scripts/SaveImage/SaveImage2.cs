@@ -24,8 +24,6 @@ public class SaveImage2 : MonoBehaviour
 
     private IEnumerator CaptureCanvasRoutine()
     {
-        yield return new WaitForEndOfFrame();
-
         RenderTexture.active = renderTexture;
 
         Texture2D screenShot = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);
@@ -43,5 +41,7 @@ public class SaveImage2 : MonoBehaviour
         File.WriteAllBytes(filename, bytes);
 
         Debug.Log("Screenshot salva para visualização em: " + filename);
+
+        yield return null;
     }
 } 

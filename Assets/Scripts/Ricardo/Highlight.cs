@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Draw : MonoBehaviour
+public class Highlight : MonoBehaviour
 {
     public Camera cam;
     public GameObject brush;
@@ -10,7 +10,7 @@ public class Draw : MonoBehaviour
 
     public Slider scaleSlider;
 
-    private int orderInLayer = 0;
+    private int orderInLayer = 1;
     private Transform parentTransform;
 
     Vector2 lastPos;
@@ -41,7 +41,7 @@ public class Draw : MonoBehaviour
         {
             Touch touch = Input.GetTouch(0);
 
-            if(touch.phase == TouchPhase.Began)
+            if (touch.phase == TouchPhase.Began)
             {
                 CreateBrush();
             }
@@ -65,7 +65,7 @@ public class Draw : MonoBehaviour
     }
     void MouseDrawing()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
             CreateBrush();
         }
@@ -86,11 +86,11 @@ public class Draw : MonoBehaviour
         }
     }
     void CreateBrush()
-    {        
+    {
         orderInLayer++;
         GameObject brushInstance = Instantiate(brush, parentTransform);
         currentLineRenderer = brushInstance.GetComponent<LineRenderer>();
-        currentLineRenderer.sortingOrder = orderInLayer;
+        currentLineRenderer.sortingOrder = orderInLayer - 1;
 
         ChangeSize();
 
@@ -109,7 +109,7 @@ public class Draw : MonoBehaviour
 
     void ChangeSize()
     {
-        float value = scaleSlider.value;
+        float value = scaleSlider.value + 0.25f;
         currentLineRenderer.startWidth = value;
         currentLineRenderer.endWidth = value;
     }

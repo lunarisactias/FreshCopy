@@ -1,13 +1,15 @@
 using System.IO;
 using TMPro;
 using UnityEngine;
+using Fusion;
 
-public class Player : MonoBehaviour
+public class Player : NetworkBehaviour
 {
     public int id = 0;
-    private int score = 0;
     public Texture2D playerDrawing;
     public TextMeshProUGUI textoComparacao;
+
+    [Networked] public int Score { get; set; }
 
     private void Update()
     {
@@ -15,6 +17,11 @@ public class Player : MonoBehaviour
         {
             GetComponentInChildren<SaveImage2>().TakeScreenshot();
         }
+    }
+
+    private void Start()
+    {
+        DontDestroyOnLoad(gameObject);
     }
 
     public void SetDrawing(Texture2D drawing)
@@ -40,8 +47,8 @@ public class Player : MonoBehaviour
     public void AddScore(float similarity)
     {
         int points = Mathf.RoundToInt(similarity * 100);
-        score += points;
-        Debug.Log($"Player {id} scored {points} points! Total: {score}");
+        Score += points;
+        Debug.Log($"Player {id} scored {points} points! Total: {Score}");
         textoComparacao.text = points.ToString();
     }
 }

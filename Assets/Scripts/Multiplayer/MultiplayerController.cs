@@ -16,6 +16,10 @@ public class MultiplayerController : MonoBehaviour, INetworkRunnerCallbacks
     public List<SessionInfo> salasDisponiveis = new List<SessionInfo>(); //lista de salas disponíveis para mostrar no menu
     public Text listaLobby; //texto para mostrar as salas disponíveis
 
+    private void Start()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
     public async void EntrarSala()
     {
         if (string.IsNullOrEmpty(nomeSala.text))

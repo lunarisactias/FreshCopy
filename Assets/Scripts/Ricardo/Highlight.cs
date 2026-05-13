@@ -90,7 +90,7 @@ public class Highlight : MonoBehaviour
         orderInLayer++;
         GameObject brushInstance = Instantiate(brush, parentTransform);
         currentLineRenderer = brushInstance.GetComponent<LineRenderer>();
-        currentLineRenderer.sortingOrder = orderInLayer - 1;
+        currentLineRenderer.sortingOrder = orderInLayer;
 
         ChangeSize();
 

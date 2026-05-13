@@ -10,13 +10,14 @@ public class Erase : MonoBehaviour
 
     public Slider scaleSlider;
 
-    private int orderInLayer = 0;
+    private Draw draw;
     private Transform parentTransform;
 
     Vector2 lastPos;
 
     private void Start()
     {
+        draw = GameObject.Find("Draw").GetComponent<Draw>();
         parentTransform = transform;
     }
     private void Update()
@@ -47,10 +48,9 @@ public class Erase : MonoBehaviour
 
     void CreateBrush()
     {        
-        orderInLayer++;
         GameObject brushInstance = Instantiate(brush, parentTransform);
         currentLineRenderer = brushInstance.GetComponent<LineRenderer>();
-        currentLineRenderer.sortingOrder = orderInLayer;
+        currentLineRenderer.sortingOrder = draw.orderInLayer + 1;
 
         ChangeSize();
 

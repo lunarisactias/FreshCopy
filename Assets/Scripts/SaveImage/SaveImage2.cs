@@ -1,15 +1,12 @@
-using UnityEngine;
-using System.IO;
 using System.Collections;
-using UnityEditor;
+using System.IO;
+using System.Threading.Tasks;
+using UnityEngine;
 
 public class SaveImage2 : MonoBehaviour
 {
-    public Camera captureCamera; 
+    public Camera captureCamera;
     public RenderTexture renderTexture;
-
-    private int playerID;
-
 
     private void Update()
     {
@@ -18,6 +15,7 @@ public class SaveImage2 : MonoBehaviour
             TakeScreenshot();
         }
     }
+
     public void TakeScreenshot()
     {
         StartCoroutine(CaptureCanvasRoutine());
@@ -25,8 +23,6 @@ public class SaveImage2 : MonoBehaviour
 
     private IEnumerator CaptureCanvasRoutine()
     {
-        yield return new WaitForEndOfFrame();
-
         RenderTexture.active = renderTexture;
 
         Texture2D screenShot = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);
@@ -35,19 +31,15 @@ public class SaveImage2 : MonoBehaviour
 
         RenderTexture.active = null;
 
+        Player me = GetComponentInParent<Player>();
+        me.SetDrawing(screenShot);
+
         byte[] bytes = screenShot.EncodeToPNG();
-        playerID = GetComponentInParent<Player>().GetID();
-        string filename = Path.Combine(Application.dataPath, $"Resources/drawing_screenshot_{playerID}.png");
+        string filename = Path.Combine(Application.persistentDataPath, $"drawing_screenshot.png");
         File.WriteAllBytes(filename, bytes);
 
-        Texture2D playerDrawing = Resources.Load<Texture2D>($"drawing_screenshot_{playerID}");
+        Debug.Log("Screenshot salva para visualização em: " + filename);
 
-        GetComponentInParent<Player>().SetDrawing(playerDrawing);
-
-        //AssetDatabase.Refresh();
-
-        Debug.Log("Screenshot saved to: " + filename);
-
-        Destroy(screenShot);
+        yield return null;
     }
 }

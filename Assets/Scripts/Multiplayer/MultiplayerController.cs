@@ -1,24 +1,49 @@
+using Fusion;
+using Fusion.Sockets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Fusion;
-using Fusion.Sockets;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class MultiplayerController : MonoBehaviour, INetworkRunnerCallbacks
 {
-    public InputField nomeSala; //pega do menu
-    public Text erro; //pega do menu
-    NetworkRunner runner; //será criado no clique do botão Entrar
-    public GameObject playerPrefab; //prefab do player
-    public Canvas TelaEntrarSala; //menu da tela
-    public List<SessionInfo> salasDisponiveis = new List<SessionInfo>(); //lista de salas disponíveis para mostrar no menu
-    public Text listaLobby; //texto para mostrar as salas disponíveis
+    public static MultiplayerController Instance;
+
+    [Header("Configurações do Menu")]
+    public InputField nomeSala;
+    public InputField nomeDoJogadorLocal;
+    public Text erro;
+    public GameObject playerPrefab;
+
+    [Header("Telas (Canvas)")]
+    public Canvas TelaEntrarSala;
+    public Canvas TelaAguardandoSala;
+
+    [Header("Elementos da Sala de Espera")]
+    public Text listaJogadoresNaSala;
+    public GameObject botaoComecarJogo;
+
+    [Header("Lobby de Salas")]
+    public List<SessionInfo> salasDisponiveis = new List<SessionInfo>();
+    public Text listaLobby;
+
+    private NetworkRunner runner;
+
+    private List<Player> jogadoresConectados = new List<Player>();
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
 
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
+
+        if (TelaAguardandoSala != null)
+            TelaAguardandoSala.gameObject.SetActive(false);
     }
     public async void EntrarSala()
     {
@@ -28,6 +53,9 @@ public class MultiplayerController : MonoBehaviour, INetworkRunnerCallbacks
             erro.text = "O nome da sala não pode ser vazio!";
             return;
         }
+
+        string nome = string.IsNullOrEmpty(nomeDoJogadorLocal?.text) ? "Jogador " + UnityEngine.Random.Range(1000, 9999) : nomeDoJogadorLocal.text;
+        PlayerPrefs.SetString("NomeJogadorLocal", nome);
 
         if (runner == null)
         {
@@ -42,7 +70,22 @@ public class MultiplayerController : MonoBehaviour, INetworkRunnerCallbacks
             Scene = SceneRef.FromIndex(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex),
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
         });
+
         TelaEntrarSala.gameObject.SetActive(false);
+        TelaAguardandoSala.gameObject.SetActive(true);
+
+        if (botaoComecarJogo != null)
+        {
+            botaoComecarJogo.SetActive(runner.IsSharedModeMasterClient);
+        }
+    }
+
+    public void IniciarJogo()
+    {
+        if (runner != null && runner.IsSharedModeMasterClient)
+        {
+            runner.LoadScene(SceneRef.FromIndex(1));
+        }
     }
 
     public async void ListarSalas()
@@ -55,103 +98,93 @@ public class MultiplayerController : MonoBehaviour, INetworkRunnerCallbacks
         await runner.JoinSessionLobby(SessionLobby.Shared);
     }
 
-
-    public void OnConnectedToServer(NetworkRunner runner)
+    public void RegistrarJogadorNaUI(Player novoJogador)
     {
+        if (!jogadoresConectados.Contains(novoJogador))
+        {
+            jogadoresConectados.Add(novoJogador);
+            AtualizarListaDeEspera();
+        }
     }
 
-    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
+    public void RemoverJogadorDaUI(Player jogadorSaindo)
     {
+        if (jogadoresConectados.Contains(jogadorSaindo))
+        {
+            jogadoresConectados.Remove(jogadorSaindo);
+            AtualizarListaDeEspera();
+        }
     }
 
-    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
+    public void AtualizarListaDeEspera()
     {
+        if (listaJogadoresNaSala == null) return;
+
+        listaJogadoresNaSala.text = "Jogadores na Sala:\n\n";
+        foreach (var player in jogadoresConectados)
+        {
+            listaJogadoresNaSala.text += $"- {player.NomeJogador}\n";
+        }
     }
 
-    public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)
-    {
-    }
+    public void OnConnectedToServer(NetworkRunner runner) {}
 
-    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
-    {
-    }
+    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) {}
 
-    public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
-    {
-    }
+    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) {}
 
-    public void OnInput(NetworkRunner runner, NetworkInput input)
-    {
-    }
+    public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) {}
 
-    public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
-    {
-    }
+    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) {}
 
-    public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
-    {
-    }
+    public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) {}
 
-    public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
-    {
-    }
+    public void OnInput(NetworkRunner runner, NetworkInput input) {}
 
-    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
-    {
-    }
+    public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) {}
 
-    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
-    {
-    }
+    public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
 
-    public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress)
-    {
-    }
+    public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
 
-    public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data)
-    {
-    }
+    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) {}
+
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) {}
+
+    public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress) {}
+
+    public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data) {}
 
     public void OnSceneLoadDone(NetworkRunner runner)
     {
-        // Spawna o jogador apenas após a cena estar totalmente carregada e sincronizada
         if (runner.LocalPlayer != PlayerRef.None && runner.GetPlayerObject(runner.LocalPlayer) == null)
         {
-            var objetoDaRede = runner.Spawn(playerPrefab,
-                new Vector3(0, 0, 0),
-                Quaternion.identity,
-                runner.LocalPlayer);
+            var objetoDaRede = runner.Spawn(playerPrefab, Vector3.zero, Quaternion.identity, runner.LocalPlayer);
             runner.SetPlayerObject(runner.LocalPlayer, objetoDaRede);
         }
     }
 
 
-    public void OnSceneLoadStart(NetworkRunner runner)
-    {
-    }
+    public void OnSceneLoadStart(NetworkRunner runner) {}
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
         salasDisponiveis = sessionList;
-        Debug.Log($"Lista de salas atualizada: {salasDisponiveis.Count} salas disponíveis.");
-        foreach (var session in salasDisponiveis)
-        {
-            Debug.Log($"Sala: {session.Name}, Jogadores: {session.PlayerCount}/{session.MaxPlayers}");
-            listaLobby.text += $"Sala: {session.Name}, Jogadores: {session.PlayerCount}/{session.MaxPlayers}\n";
-        }
+        listaLobby.text = "";
+
         if (salasDisponiveis.Count == 0)
         {
-            Debug.Log("Nenhuma sala disponível.");
             listaLobby.text = "Nenhuma sala disponível.";
+            return;
         }
 
+        foreach (var session in salasDisponiveis)
+        {
+            listaLobby.text += $"Sala: {session.Name} | Jogadores: {session.PlayerCount}/{session.MaxPlayers}\n";
+        }
     }
 
-    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
-    {
-    }
+    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) {}
 
-    public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
-    {
-    }
+    public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) {}
 }

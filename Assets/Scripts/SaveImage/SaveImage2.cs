@@ -1,13 +1,12 @@
 using System.Collections;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class SaveImage2 : MonoBehaviour
 {
     public Camera captureCamera;
     public RenderTexture renderTexture;
-
-    private int playerID;
 
     private void Update()
     {
@@ -32,12 +31,11 @@ public class SaveImage2 : MonoBehaviour
 
         RenderTexture.active = null;
 
-        playerID = GetComponentInParent<Player>().GetID();
-
-        GetComponentInParent<Player>().SetDrawing(screenShot);
+        Player me = GetComponentInParent<Player>();
+        me.SetDrawing(screenShot);
 
         byte[] bytes = screenShot.EncodeToPNG();
-        string filename = Path.Combine(Application.persistentDataPath, $"drawing_screenshot_{playerID}.png");
+        string filename = Path.Combine(Application.persistentDataPath, $"drawing_screenshot.png");
         File.WriteAllBytes(filename, bytes);
 
         Debug.Log("Screenshot salva para visualização em: " + filename);

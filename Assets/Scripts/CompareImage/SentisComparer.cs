@@ -6,53 +6,48 @@ using System.Collections;
 
 public class SentisComparer : MonoBehaviour
 {
+    public static SentisComparer Instance;
+
     [Header("Configuração")]
     public ModelAsset mobileNetModel;
 
     [Header("Imagens para Teste")]
     public Texture2D originalDrawing;
-    public Texture2D playerDrawing;
 
-    public Player player;
     private Model runtimeModel;
     private Worker worker;
+
+    void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
 
     void Start()
     {
         runtimeModel = ModelLoader.Load(mobileNetModel);
-
         worker = new Worker(runtimeModel, BackendType.GPUCompute);
     }
 
-    private void Update()
+    public void EvaluateLocalPlayer(Player localPlayer)
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        StartCoroutine(CompareRoutine(localPlayer));
+    }
+
+    IEnumerator CompareRoutine(Player localPlayer)
+    {
+        while (localPlayer.GetDrawing() == null)
         {
-            StartCoroutine(Compare());
+            yield return null; 
         }
-    }
 
-    public void CompareImages()
-    {
-        player.GetComponentInChildren<SaveImage2>().TakeScreenshot();
+        Texture2D texPlayer = localPlayer.GetDrawing();
 
-        StartCoroutine(Compare());
-    }
-
-    private IEnumerator Compare()
-    {
-        yield return new WaitForSeconds(0.5f);
-
-        playerDrawing = player.GetDrawing();
-       
-        float similarity = CompareDrawings(originalDrawing, playerDrawing);
-
-        player.AddScore(similarity);
-        Debug.Log($"Player {player.id}: {similarity * 100:F0} Pontos!");
-     
-        yield return new WaitForEndOfFrame();
-
-        playerDrawing = null;
+        if (texPlayer == null)
+        {
+            float similarity = CompareDrawings(originalDrawing, texPlayer);
+            localPlayer.AddScore(similarity);
+        }
     }
 
     float CompareDrawings(Texture2D texA, Texture2D texB)

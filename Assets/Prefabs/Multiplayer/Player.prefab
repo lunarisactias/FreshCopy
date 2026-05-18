@@ -56,6 +56,7 @@ GameObject:
   m_Component:
   - component: {fileID: 449610494272130480}
   - component: {fileID: 1022467953744826251}
+  - component: {fileID: 7208668924736150599}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -91,6 +92,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 564067b637f1865498cb42d2cb1fd967, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  id: 0
   playerDrawing: {fileID: 0}
   textoComparacao: {fileID: 0}
+  _Score: 0
+  _NomeJogador:
+    _length: 0
+    _data:
+      Data: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+--- !u!114 &7208668924736150599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3133516431143665276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 1683279495
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 1022467953744826251}
+  ForceRemoteRenderTimeframe: 0

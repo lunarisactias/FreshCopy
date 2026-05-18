@@ -15,12 +15,12 @@ public class RoundSystem : MonoBehaviour
 
 
     [Header("SCRIPTS")]
-    [SerializeField] private InferenceComparer imgComparer;
+    [SerializeField] private SentisComparer imgComparer;
     [SerializeField] private Reference refer;
 
     private void Awake()
     {
-        imgComparer = GameObject.Find("SentisTest").GetComponent<InferenceComparer>();
+        imgComparer = GameObject.Find("SentisTest").GetComponent<SentisComparer>();
         refer = GameObject.Find("Reference").GetComponent<Reference>();
         roundTimer = 5.9f;
         activateTimer = true;

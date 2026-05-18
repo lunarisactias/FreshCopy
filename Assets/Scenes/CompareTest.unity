@@ -286,7 +286,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   id: 0
-  playerDrawing: {fileID: 2800000, guid: 2ce568fcbbf3b594ebfbbf7ebcb9893c, type: 3}
+  playerDrawing: {fileID: 2800000, guid: 468d5761dd6736f4ab0812f90ba66af7, type: 3}
 --- !u!4 &546053922
 Transform:
   m_ObjectHideFlags: 0
@@ -462,8 +462,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InferenceComparer
   mobileNetModel: {fileID: 5022602860645237092, guid: 835986dd35631244987bae8fc90546c9, type: 3}
-  originalDrawing: {fileID: 2800000, guid: 86448113d9d429345ac7bae2b32d65eb, type: 3}
+  originalDrawing: {fileID: 2800000, guid: 2ce568fcbbf3b594ebfbbf7ebcb9893c, type: 3}
   playersDrawing: []
+  players: []
 --- !u!4 &725356151
 Transform:
   m_ObjectHideFlags: 0

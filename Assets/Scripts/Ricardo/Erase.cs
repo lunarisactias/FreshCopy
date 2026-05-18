@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Draw : MonoBehaviour
+public class Erase : MonoBehaviour
 {
     public Camera cam;
     public GameObject brush;
@@ -10,13 +10,14 @@ public class Draw : MonoBehaviour
 
     public Slider scaleSlider;
 
-    public int orderInLayer = 200;
+    private Draw draw;
     private Transform parentTransform;
 
     Vector2 lastPos;
 
     private void Start()
     {
+        draw = GameObject.Find("Draw").GetComponent<Draw>();
         parentTransform = transform;
     }
     private void Update()
@@ -25,55 +26,14 @@ public class Draw : MonoBehaviour
     }
     void DrawMethod()
     {
-        if (SystemInfo.deviceType == DeviceType.Desktop)
-        {
-            MouseDrawing();
-        }
-        else
-        {
-            MobileDrawing();
-        }
-    }
-
-    void MobileDrawing()
-    {
-        if (Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0);
-
-            if(touch.phase == TouchPhase.Began)
-            {
-                CreateBrush();
-            }
-
-            if (touch.phase == TouchPhase.Moved)
-            {
-                Vector2 touchPos = cam.ScreenToWorldPoint(Input.GetTouch(0).position);
-                if (touchPos != lastPos)
-                {
-                    AddAPoint(touchPos);
-                    lastPos = touchPos;
-                }
-                AddAPoint(touchPos);
-            }
-
-        }
-        else
-        {
-            currentLineRenderer = null;
-        }
-    }
-    void MouseDrawing()
-    {
         if(Input.GetMouseButtonDown(0))
         {
             CreateBrush();
         }
-
-        if (Input.GetMouseButton(0))
+        if(Input.GetMouseButton(0))
         {
             Vector2 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
-            if (mousePos != lastPos)
+            if(mousePos != lastPos)
             {
                 AddAPoint(mousePos);
                 lastPos = mousePos;
@@ -85,12 +45,12 @@ public class Draw : MonoBehaviour
             currentLineRenderer = null;
         }
     }
+
     void CreateBrush()
     {        
-        orderInLayer++;
         GameObject brushInstance = Instantiate(brush, parentTransform);
         currentLineRenderer = brushInstance.GetComponent<LineRenderer>();
-        currentLineRenderer.sortingOrder = orderInLayer + 1;
+        currentLineRenderer.sortingOrder = draw.orderInLayer + 1;
 
         ChangeSize();
 

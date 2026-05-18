@@ -22,7 +22,7 @@ public class RoundSystem : MonoBehaviour
     {
         imgComparer = GameObject.Find("SentisTest").GetComponent<InferenceComparer>();
         refer = GameObject.Find("Reference").GetComponent<Reference>();
-        roundTimer = 5f;
+        roundTimer = 5.9f;
         activateTimer = true;
     }
 

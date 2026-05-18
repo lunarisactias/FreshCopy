@@ -21,7 +21,7 @@ public class Reference : MonoBehaviour
     public void ShowImageReference(Texture2D chosenImage)
     {
         imageD.texture = chosenImage;
-        imageD.SetNativeSize();
+        //imageD.SetNativeSize();
     }
 
 }

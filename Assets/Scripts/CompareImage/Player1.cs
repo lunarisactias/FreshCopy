@@ -1,4 +1,5 @@
 using System.IO;
+using TMPro;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -6,6 +7,7 @@ public class Player : MonoBehaviour
     public int id = 0;
     private int score = 0;
     public Texture2D playerDrawing;
+    public TextMeshProUGUI textoComparacao;
 
     private void Update()
     {
@@ -35,5 +37,6 @@ public class Player : MonoBehaviour
         int points = Mathf.RoundToInt(similarity * 100);
         score += points;
         Debug.Log($"Player {id} scored {points} points! Total: {score}");
+        textoComparacao.text = points.ToString();
     }
 }

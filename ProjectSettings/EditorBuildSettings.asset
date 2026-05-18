@@ -6,14 +6,14 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/CompareTest.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
+    path: Assets/Scenes/menu.unity
+    guid: ab8e7c417e5c79c4e9fcab070be674e6
   - enabled: 1
     path: Assets/Scenes/DrawScene.unity
     guid: 233e301ee87d8f7488b3a79c291a2da2
   - enabled: 1
-    path: Assets/Scenes/menu.unity
-    guid: ab8e7c417e5c79c4e9fcab070be674e6
+    path: Assets/Scenes/CompareTest.unity
+    guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
     path: Assets/Scenes/SaveTest.unity
     guid: 0d38594d3fd4837469e844b28640613c

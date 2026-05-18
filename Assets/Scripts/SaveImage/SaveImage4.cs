@@ -44,7 +44,7 @@ public class SaveImage2 : MonoBehaviour
 
         GetComponentInParent<Player>().SetDrawing(playerDrawing);
 
-        AssetDatabase.Refresh();
+        //AssetDatabase.Refresh();
 
         Debug.Log("Screenshot saved to: " + filename);
 

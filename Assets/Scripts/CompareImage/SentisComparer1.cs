@@ -1,66 +1,53 @@
 using UnityEngine;
 using Unity.InferenceEngine;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using TMPro;
+using System.Collections;
 
-public class InferenceComparer : MonoBehaviour
+public class SentisComparer : MonoBehaviour
 {
+    public static SentisComparer Instance;
+
     [Header("Configuração")]
     public ModelAsset mobileNetModel;
 
     [Header("Imagens para Teste")]
     public Texture2D originalDrawing;
-    public List<Texture2D> playersDrawing;
 
-    public List<Player> players;
     private Model runtimeModel;
     private Worker worker;
+
+    void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
 
     void Start()
     {
         runtimeModel = ModelLoader.Load(mobileNetModel);
-
         worker = new Worker(runtimeModel, BackendType.GPUCompute);
-
-        players = FindObjectsByType<Player>(FindObjectsSortMode.None).OrderBy(player => player.GetID()).ToList();
     }
 
-    private void Update()
+    public void EvaluateLocalPlayer(Player localPlayer)
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            StartCoroutine(Compare());
-        }
+        StartCoroutine(CompareRoutine(localPlayer));
     }
 
-    private System.Collections.IEnumerator Compare()
+    IEnumerator CompareRoutine(Player localPlayer)
     {
-        foreach (var player in players)
+        while (localPlayer.GetDrawing() == null)
         {
-            playersDrawing.Add(player.GetDrawing());
+            yield return null; 
         }
 
-        foreach (var playerDrawing in playersDrawing)
+        Texture2D texPlayer = localPlayer.GetDrawing();
+
+        if (texPlayer == null)
         {
-            float similarity = CompareDrawings(originalDrawing, playerDrawing);
-
-            var player = players[playersDrawing.IndexOf(playerDrawing)];
-
-            player.AddScore(similarity);
-            //Debug.Log($"Player {player.id}: {similarity * 100:F0} Pontos!");
+            float similarity = CompareDrawings(originalDrawing, texPlayer);
+            localPlayer.AddScore(similarity);
         }
-
-        yield return new WaitForEndOfFrame();
-
-        playersDrawing.Clear();
-
-        //string playersInfo = string.Join(", ", players.Select(p => $"Player {p.GetID()}"));
-        //string drawingsInfo = string.Join(", ", playersDrawing.Select(d => d.name));
-
-        //Debug.Log(playersInfo.ToString());
-        //Debug.Log(drawingsInfo.ToString());
     }
 
     float CompareDrawings(Texture2D texA, Texture2D texB)

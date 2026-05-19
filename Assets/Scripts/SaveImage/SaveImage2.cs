@@ -42,4 +42,4 @@ public class SaveImage2 : MonoBehaviour
 
         yield return null;
     }
-} 
+}

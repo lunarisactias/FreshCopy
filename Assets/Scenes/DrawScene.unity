@@ -408,7 +408,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1213933509}
         m_TargetAssemblyTypeName: ChangeOptions, Assembly-CSharp
         m_MethodName: ChooseBrush
         m_Mode: 2
@@ -1279,6 +1279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b10da021a673c174abb149329ea9844c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Reference
+  imageD: {fileID: 607429306}
 --- !u!114 &607429306
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1502,11 +1503,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 664577250}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d09864fed32bb724895c4f072fa2ba14, type: 3}
+  m_Script: {fileID: 11500000, guid: d0b0be599b87f22489d3f445bbe372ef, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SentisComparer
-  mobileNetModel: {fileID: 5022602860645237092, guid: 835986dd35631244987bae8fc90546c9, type: 3}
-  originalDrawing: {fileID: 2800000, guid: 3ee6d9ec095aa6b4b82ff07fce5722f6, type: 3}
+  m_EditorClassIdentifier: Assembly-CSharp::RoundSystem
+  imgs:
+  - {fileID: 2800000, guid: 6b38ad402c8dc4c43a60f14cfba3ca6c, type: 3}
+  - {fileID: 2800000, guid: a124ffe96fc0ff54898017a41b769744, type: 3}
+  - {fileID: 2800000, guid: 84ccfd21d36c1cf45be57a42bf76cf77, type: 3}
+  - {fileID: 2800000, guid: cccca845125065741a6324544d9e1f28, type: 3}
+  - {fileID: 2800000, guid: 81b237076af114d438a41b365ba871e5, type: 3}
+  - {fileID: 2800000, guid: e988c58db9ec1bc4ca5a077ff898f72a, type: 3}
+  - {fileID: 2800000, guid: d0c5ea6c997eb284d8580d1932f573c6, type: 3}
+  - {fileID: 2800000, guid: 93e25423d563bd24ebd3f2afe9387b6d, type: 3}
+  - {fileID: 2800000, guid: 4c02e873a5546914fbfa3c94a7228cf2, type: 3}
+  - {fileID: 2800000, guid: 8492f0655c174ac4d93fde3069776e25, type: 3}
+  - {fileID: 2800000, guid: 5e0af65b159e4304082308c07343398a, type: 3}
+  - {fileID: 2800000, guid: 36b211ee5d7053640a719b5fbb749683, type: 3}
+  roundTimer: 0
+  tmp: {fileID: 679783540}
+  activateTimer: 0
+  imgComparer: {fileID: 0}
+  refer: {fileID: 607429305}
 --- !u!1 &679783539
 GameObject:
   m_ObjectHideFlags: 0
@@ -2372,6 +2389,7 @@ MonoBehaviour:
   brush: {fileID: 3887971989252928526, guid: 4d1f6f9d2601ee24f9d9312178f3ebc0, type: 3}
   currentLineRenderer: {fileID: 0}
   scaleSlider: {fileID: 2068045237}
+  orderInLayer: 200
 --- !u!4 &1011439833
 Transform:
   m_ObjectHideFlags: 0
@@ -2470,7 +2488,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1213933509}
         m_TargetAssemblyTypeName: ChangeOptions, Assembly-CSharp
         m_MethodName: ChooseHighlighter
         m_Mode: 2
@@ -3215,10 +3233,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1213933504}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b3032ed196317374090c24ed1356e461, type: 3}
+  m_Script: {fileID: 11500000, guid: ead653d888e788948ad2c6812d9d7bed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChangeBrush
-  draw: {fileID: 1011439832}
+  brushObj: {fileID: 1011439831}
+  eraseObj: {fileID: 1365620505}
+  highlightObj: {fileID: 1139483590}
 --- !u!1 &1365620505
 GameObject:
   m_ObjectHideFlags: 0
@@ -3263,6 +3283,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55db0df3bd4d7244b92c28917835ccd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Erase
+  cam: {fileID: 1121595471}
+  brush: {fileID: 3887971989252928526, guid: 631b3042a8282ba469f746d530983cc0, type: 3}
+  currentLineRenderer: {fileID: 0}
+  scaleSlider: {fileID: 2068045237}
 --- !u!1 &1393812441
 GameObject:
   m_ObjectHideFlags: 0
@@ -3655,6 +3679,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2974fd0902b87494ab8109a03cfc29cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::testeTamanhoCam
+  cam: {fileID: 1749465160}
 --- !u!1 &1759785668
 GameObject:
   m_ObjectHideFlags: 0

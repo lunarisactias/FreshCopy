@@ -9,11 +9,14 @@ EditorBuildSettings:
     path: Assets/Scenes/menu.unity
     guid: ab8e7c417e5c79c4e9fcab070be674e6
   - enabled: 1
-    path: Assets/Scenes/DrawScene.unity
-    guid: 233e301ee87d8f7488b3a79c291a2da2
+    path: Assets/Scenes/DrawSceneTeste.unity
+    guid: ee175f6ab5caca147a81eba0f4866583
   - enabled: 1
     path: Assets/Scenes/Lobby.unity
     guid: a89684ff8453eb44fb2ab4f51b676229
+  - enabled: 1
+    path: Assets/Scenes/DrawScene.unity
+    guid: af88cf1d554ba0c4daaa52d4bc588ea4
   - enabled: 1
     path: Assets/Scenes/CompareTest.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02

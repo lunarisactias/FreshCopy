@@ -43,7 +43,7 @@ public class SentisComparer : MonoBehaviour
 
         Texture2D texPlayer = localPlayer.GetDrawing();
 
-        if (texPlayer == null)
+        if (texPlayer != null)
         {
             float similarity = CompareDrawings(originalDrawing, texPlayer);
             localPlayer.AddScore(similarity);

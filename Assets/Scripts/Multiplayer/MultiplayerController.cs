@@ -13,7 +13,10 @@ public class MultiplayerController : MonoBehaviour, INetworkRunnerCallbacks
     [Header("Configurações do Menu")]
     public InputField nomeSala;
     public InputField nomeDoJogadorLocal;
+    public InputField senhaDaSala;
     public Text erro;
+    public Button BotaoEntrarSala;
+    public Button BotaoAtualizarSalas;
     public GameObject playerPrefab;
 
     [Header("Telas (Canvas)")]
@@ -44,18 +47,59 @@ public class MultiplayerController : MonoBehaviour, INetworkRunnerCallbacks
 
         if (TelaAguardandoSala != null)
             TelaAguardandoSala.gameObject.SetActive(false);
+
+        ListarSalas();
     }
     public async void EntrarSala()
     {
+        if (BotaoEntrarSala != null)
+            BotaoEntrarSala.interactable = false;
+
+        if (erro != null)
+            erro.text = "Conectando...";
+
         if (string.IsNullOrEmpty(nomeSala.text))
         {
             Debug.LogError("O nome da sala não pode ser vazio!");
             erro.text = "O nome da sala não pode ser vazio!";
+            if (BotaoEntrarSala != null)
+                BotaoEntrarSala.interactable = true;
             return;
         }
 
-        string nome = string.IsNullOrEmpty(nomeDoJogadorLocal?.text) ? "Jogador " + UnityEngine.Random.Range(1000, 9999) : nomeDoJogadorLocal.text;
-        PlayerPrefs.SetString("NomeJogadorLocal", nome);
+        string nome = nomeSala.text;
+        string senha = senhaDaSala != null ? senhaDaSala.text : "";
+
+        SessionInfo salaEncontrada = null;
+        foreach (var session in salasDisponiveis)
+        {
+            if (session.Name == nome)
+            {
+                salaEncontrada = session;
+                break;
+            }
+        }
+
+        if (salaEncontrada != null)
+        {
+            if (salaEncontrada.Properties != null && salaEncontrada.Properties.TryGetValue("Senha", out SessionProperty senhaSalva))
+            {
+                if ((string)senhaSalva != senha)
+                {
+                    Debug.LogError("Senha incorreta para a sala!");
+                    erro.text = "Senha incorreta para a sala!";
+                    if (BotaoEntrarSala != null)
+                        BotaoEntrarSala.interactable = true;
+                    return;
+                }
+            }
+        }
+
+        var customProps = new Dictionary<string, SessionProperty>();
+        customProps.Add("Senha", senha);
+
+        string nomeJogador = string.IsNullOrEmpty(nomeDoJogadorLocal?.text) ? "Jogador " + UnityEngine.Random.Range(1000, 9999) : nomeDoJogadorLocal.text;
+        PlayerPrefs.SetString("NomeJogadorLocal", nomeJogador);
 
         if (runner == null)
         {
@@ -63,13 +107,28 @@ public class MultiplayerController : MonoBehaviour, INetworkRunnerCallbacks
             runner.ProvideInput = true;
         }
 
-        await runner.StartGame(new StartGameArgs()
+        var resultado = await runner.StartGame(new StartGameArgs()
         {
             GameMode = GameMode.Shared,
             SessionName = nomeSala.text,
+            PlayerCount = 8,
+            SessionProperties = customProps,
             Scene = SceneRef.FromIndex(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex),
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
         });
+
+        if (!resultado.Ok)
+        {
+            Debug.LogError("Falha ao entrar na sala: " + resultado.ShutdownReason);
+            if (erro != null)
+                erro.text = "Falha ao entrar na sala: " + resultado.ShutdownReason;
+            if (BotaoEntrarSala != null)
+                BotaoEntrarSala.interactable = true;
+            return;
+        }
+
+        if (erro != null)
+            erro.text = "";
 
         TelaEntrarSala.gameObject.SetActive(false);
         TelaAguardandoSala.gameObject.SetActive(true);
@@ -84,18 +143,41 @@ public class MultiplayerController : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (runner != null && runner.IsSharedModeMasterClient)
         {
+            runner.SessionInfo.IsOpen = false;
+            runner.SessionInfo.IsVisible = false;
             runner.LoadScene(SceneRef.FromIndex(1));
         }
     }
 
     public async void ListarSalas()
     {
+        if (BotaoAtualizarSalas != null)
+            BotaoAtualizarSalas.interactable = false;
+
+        if (listaLobby != null)
+            listaLobby.text = "Carregando salas...";
+
         if (runner == null)
         {
             runner = gameObject.AddComponent<NetworkRunner>();
             runner.ProvideInput = true;
         }
-        await runner.JoinSessionLobby(SessionLobby.Shared);
+        var resultado = await runner.JoinSessionLobby(SessionLobby.Shared);
+
+        if (!resultado.Ok)
+        {
+            Debug.LogError("Falha ao listar salas: " + resultado.ShutdownReason);
+            if (listaLobby != null)
+                listaLobby.text = "Falha ao listar salas: " + resultado.ShutdownReason;
+            if (BotaoAtualizarSalas != null)
+                BotaoAtualizarSalas.interactable = true;
+            return;
+        }
+
+        await System.Threading.Tasks.Task.Delay(1000);
+
+        if (BotaoAtualizarSalas != null)
+            BotaoAtualizarSalas.interactable = true;
     }
 
     public void RegistrarJogadorNaUI(Player novoJogador)
@@ -135,7 +217,16 @@ public class MultiplayerController : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) {}
 
-    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) {}
+    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
+    {
+        TelaAguardandoSala.gameObject.SetActive(false);
+        TelaEntrarSala.gameObject.SetActive(true);
+
+        if (erro != null)
+        {
+            erro.text = "Desconectado: " + reason.ToString();
+        }
+    }
 
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) {}
 

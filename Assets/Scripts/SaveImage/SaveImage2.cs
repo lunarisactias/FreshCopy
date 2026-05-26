@@ -21,6 +21,11 @@ public class SaveImage2 : MonoBehaviour
         StartCoroutine(CaptureCanvasRoutine());
     }
 
+    public void TakeReferenceScreenshot()
+    {
+        StartCoroutine(CaptureReferenceRoutine());
+    }
+
     private IEnumerator CaptureCanvasRoutine()
     {
         RenderTexture.active = renderTexture;
@@ -41,5 +46,29 @@ public class SaveImage2 : MonoBehaviour
         Debug.Log("Screenshot salva para visualização em: " + filename);
 
         yield return null;
+    }
+
+    private IEnumerator CaptureReferenceRoutine()
+    {
+        yield return new WaitForEndOfFrame();
+
+        RenderTexture.active = renderTexture;
+        Texture2D screenShot = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);
+
+        screenShot.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+        screenShot.Apply();
+
+        RenderTexture.active = null;
+
+        if (SentisComparer.Instance != null)
+        {
+            SentisComparer.Instance.originalDrawing = screenShot;
+        }
+
+        byte[] bytes = screenShot.EncodeToPNG();
+        string filename = Path.Combine(Application.persistentDataPath, $"reference_screenshot.png");
+        File.WriteAllBytes(filename, bytes);
+
+        Debug.Log("Screenshot de referência salva para visualização em: " + filename);
     }
 }

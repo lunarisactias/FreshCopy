@@ -69,7 +69,7 @@ public class Player : NetworkBehaviour
     {
         if (!HasStateAuthority) return;
 
-        int points = Mathf.RoundToInt(similarity * 100);
+        int points = Mathf.RoundToInt(Mathf.Max(0, similarity) * 100);
         Score += points;
 
         Debug.Log($"Player scored {points} points! Total: {Score}");

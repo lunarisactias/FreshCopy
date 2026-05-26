@@ -15,13 +15,28 @@ public class Draw : MonoBehaviour
 
     Vector2 lastPos;
 
+    private RoundSystem roundSystem;
+
     private void Start()
     {
         parentTransform = transform;
     }
     private void Update()
     {
-        DrawMethod();
+        if (roundSystem == null)
+        {
+            roundSystem = FindAnyObjectByType<RoundSystem>();
+        }
+
+        if (roundSystem != null && roundSystem.Object != null && roundSystem.CurrentState == RoundSystem.GameState.Drawing)
+        {
+            DrawMethod();
+        }
+        else
+        {
+            currentLineRenderer = null;
+        }
+
     }
     void DrawMethod()
     {

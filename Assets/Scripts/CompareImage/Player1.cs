@@ -11,21 +11,16 @@ public class Player : NetworkBehaviour
 
     [Networked] public int Score { get; set; }
     [Networked] public NetworkString<_32> NomeJogador { get; set; }
+    [Networked] public NetworkBool IsEvaluated { get; set; }
 
-    private void Update()
-    {
-        if (!HasStateAuthority) return;
-
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            GetComponentInChildren<SaveImage2>().TakeScreenshot();
-        }
-    }
+    private ChangeDetector changeDetector;
 
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
     }
+
+   
 
     public override void Spawned()
     {
@@ -39,6 +34,24 @@ public class Player : NetworkBehaviour
         if (MultiplayerController.Instance != null)
         {
             MultiplayerController.Instance.RegistrarJogadorNaUI(this);
+        }
+
+        changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
+    }
+
+    public override void Render()
+    {
+        foreach (var change in changeDetector.DetectChanges(this))
+        {
+            switch (change)
+            { 
+            case nameof(Score):
+                if (textoComparacao != null)
+                {
+                    textoComparacao.text = Score.ToString();
+                }
+                break;
+            }
         }
     }
 
@@ -71,6 +84,8 @@ public class Player : NetworkBehaviour
 
         int points = Mathf.RoundToInt(Mathf.Max(0, similarity) * 100);
         Score += points;
+
+        IsEvaluated = true;
 
         Debug.Log($"Player scored {points} points! Total: {Score}");
 

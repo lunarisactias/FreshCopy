@@ -37,6 +37,7 @@ public class RoundSystem : NetworkBehaviour
     [Networked] public GameState CurrentState { get; set; }
 
     private ChangeDetector changeDetector;
+    private float scoreboardUpdateTimer = 0f;
 
     public override void Spawned()
     {
@@ -103,6 +104,16 @@ public class RoundSystem : NetworkBehaviour
                     break;
             }
         }
+
+        if (CurrentState == GameState.GameOver)
+        {
+            scoreboardUpdateTimer += Time.deltaTime;
+            if (scoreboardUpdateTimer >= 0.5f)
+            {
+                scoreboardUpdateTimer = 0f;
+                DisplayNamesOnScoreboard();
+            }
+        }
     }
 
     private void UpdateScreenByState(GameState state)
@@ -144,6 +155,10 @@ public class RoundSystem : NetworkBehaviour
         Player localPlayer = FindObjectsByType<Player>(FindObjectsSortMode.None).FirstOrDefault(p => p.HasStateAuthority);
         if (localPlayer != null && SentisComparer.Instance != null)
         {
+            localPlayer.IsEvaluated = false;
+
+            localPlayer.SetDrawing(null);
+
             SaveImage2 screenshot = localPlayer.GetComponentInChildren<SaveImage2>();
             if (screenshot != null)
             {
@@ -155,7 +170,7 @@ public class RoundSystem : NetworkBehaviour
 
         if (scoreboardScreen != null) scoreboardScreen.SetActive(true);
 
-        Invoke(nameof(DisplayNamesOnScoreboard), 1.5f);
+        DisplayNamesOnScoreboard();
     }
 
     private void DisplayNamesOnScoreboard()
@@ -171,6 +186,7 @@ public class RoundSystem : NetworkBehaviour
         int position = 1;
         foreach (var p in allPlayers)
         {
+            string pointsDisplay = p.IsEvaluated ? $"{p.Score} Pontos" : "Processando...";
             scoreboardText.text += $"{position}º Lugar: {p.NomeJogador} - {p.Score} Pontos\n";
             position++;
         }

@@ -2689,6 +2689,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Draw
   cam: {fileID: 1121595471}
   brush: {fileID: 3887971989252928526, guid: 4d1f6f9d2601ee24f9d9312178f3ebc0, type: 3}
+  brushIMG: {fileID: 0}
+  brushOffset: {x: 0, y: 0}
   currentLineRenderer: {fileID: 0}
   scaleSlider: {fileID: 2068045237}
   orderInLayer: 200
@@ -3402,10 +3404,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f55e3a6df008e642bca1be0e5be9d55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Highlight
-  cam: {fileID: 0}
-  brush: {fileID: 0}
+  cam: {fileID: 1121595471}
+  brush: {fileID: 3887971989252928526, guid: d71d09cd92c7dce4ea8ddf96ef105ccd, type: 3}
   currentLineRenderer: {fileID: 0}
-  scaleSlider: {fileID: 0}
+  scaleSlider: {fileID: 2068045237}
 --- !u!4 &1139483592
 Transform:
   m_ObjectHideFlags: 0
@@ -3728,7 +3730,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Erase
   cam: {fileID: 1121595471}
   brush: {fileID: 3887971989252928526, guid: 631b3042a8282ba469f746d530983cc0, type: 3}
-  currentLineRenderer: {fileID: 1218686964630066625, guid: d71d09cd92c7dce4ea8ddf96ef105ccd, type: 3}
+  currentLineRenderer: {fileID: 0}
   scaleSlider: {fileID: 2068045237}
 --- !u!1 &1393812441
 GameObject:
@@ -3919,6 +3921,9 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 8492f0655c174ac4d93fde3069776e25, type: 3}
   - {fileID: 2800000, guid: 5e0af65b159e4304082308c07343398a, type: 3}
   - {fileID: 2800000, guid: 36b211ee5d7053640a719b5fbb749683, type: 3}
+  preparingDuration: 5
+  memorizingDuration: 10
+  drawingDuration: 60
   timerText: {fileID: 1989075701}
   scoreboardScreen: {fileID: 152672456}
   scoreboardText: {fileID: 731733171}
@@ -5045,7 +5050,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1213933509}
         m_TargetAssemblyTypeName: ChangeOptions, Assembly-CSharp
         m_MethodName: ChooseEraser
         m_Mode: 2

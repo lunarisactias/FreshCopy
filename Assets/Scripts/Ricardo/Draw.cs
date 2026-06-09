@@ -5,7 +5,6 @@ public class Draw : MonoBehaviour
 {
     public Camera cam;
     public GameObject brush;
-    public GameObject brushIMG;
 
     [SerializeField] private Vector2 brushOffset;
     public LineRenderer currentLineRenderer;
@@ -60,6 +59,7 @@ public class Draw : MonoBehaviour
 
             if(touch.phase == TouchPhase.Began)
             {
+                Vector2 touchPos = cam.ScreenToWorldPoint(Input.GetTouch(0).position);
                 CreateBrush();
             }
 
@@ -67,7 +67,6 @@ public class Draw : MonoBehaviour
             {
                 Vector2 touchPos = cam.ScreenToWorldPoint(Input.GetTouch(0).position);
 
-                Instantiate(brushIMG, touchPos + brushOffset, Quaternion.identity);
                 if (touchPos != lastPos)
                 {
                     AddAPoint(touchPos);
@@ -75,7 +74,6 @@ public class Draw : MonoBehaviour
                 }
                 AddAPoint(touchPos);
             }
-
         }
         else
         {
